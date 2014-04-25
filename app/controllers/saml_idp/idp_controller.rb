@@ -8,6 +8,8 @@ module SamlIdp
     protect_from_forgery
 
     before_filter :validate_saml_request
+    skip_before_filter :validate_saml_request, :only => [:logout]
+    before_filter :validate_saml_slo_request, :only => [:logout]
 
     def new
       render :template => "saml_idp/idp/new"
@@ -27,6 +29,19 @@ module SamlIdp
       render :template => "saml_idp/idp/new"
     end
 
+    def logout
+      _person, _logout = idp_slo_authenticate(params[:name_id])
+      if _person && _logout
+        @saml_slo_response = idp_make_saml_slo_response(_person)
+        render :template => "saml_idp/idp/saml_slo_post", :layout => false
+        return
+      else
+        @saml_idp_fail_msg = 'Unable to logout'
+        logger.error 'Failed to logout'
+      end
+      render :nothing => true
+    end
+
     protected
 
       def idp_authenticate(email, password)
@@ -34,6 +49,14 @@ module SamlIdp
       end
 
       def idp_make_saml_response(person)
+        raise "Not implemented"
+      end
+
+      def idp_slo_authenticate(email)
+        raise "Not implemented"
+      end
+
+      def idp_make_saml_slo_response(person)
         raise "Not implemented"
       end
 
