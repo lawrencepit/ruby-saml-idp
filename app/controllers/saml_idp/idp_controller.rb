@@ -35,7 +35,7 @@ module SamlIdp
         @saml_slo_response = idp_make_saml_slo_response(_person)
       else
         @saml_idp_fail_msg = 'User not found'
-        logger.error 'User with email #{params[:name_id]} not found'
+        logger.error "User with email #{params[:name_id]} not found"
         @saml_slo_response = encode_SAML_SLO_Response(params[:name_id])
       end
       render :template => "saml_idp/idp/saml_slo_post", :layout => false
