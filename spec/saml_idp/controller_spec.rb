@@ -12,7 +12,7 @@ describe SamlIdp::Controller do
     requested_saml_acs_url = "https://example.com/saml/consume"
     params[:SAMLRequest] = make_saml_request(requested_saml_acs_url)
     validate_saml_request
-    saml_acs_url.should == requested_saml_acs_url
+    expect(saml_acs_url).to eq(requested_saml_acs_url)
   end
 
   context "SAML Responses" do
@@ -23,22 +23,22 @@ describe SamlIdp::Controller do
 
     it "should create a SAML Response" do
       saml_response = encode_SAMLResponse("foo@example.com")
-      response = Onelogin::Saml::Response.new(saml_response)
-      response.name_id.should == "foo@example.com"
-      response.issuer.should == "http://example.com"
+      response = OneLogin::RubySaml::Response.new(saml_response)
+      expect(response.name_id).to eq("foo@example.com")
+      expect(response.issuer).to eq("http://example.com")
       response.settings = saml_settings
-      response.is_valid?.should be_true
+      expect(response.is_valid?).to be true
     end
 
     [:sha1, :sha256, :sha384, :sha512].each do |algorithm_name|
       it "should create a SAML Response using the #{algorithm_name} algorithm" do
         self.algorithm = algorithm_name
         saml_response = encode_SAMLResponse("foo@example.com")
-        response = Onelogin::Saml::Response.new(saml_response)
-        response.name_id.should == "foo@example.com"
-        response.issuer.should == "http://example.com"
+        response = OneLogin::RubySaml::Response.new(saml_response)
+        expect(response.name_id).to eq("foo@example.com")
+        expect(response.issuer).to eq("http://example.com")
         response.settings = saml_settings
-        response.is_valid?.should be_true
+        expect(response.is_valid?).to be true
       end
     end
   end
