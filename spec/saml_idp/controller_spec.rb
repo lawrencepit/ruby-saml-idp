@@ -42,5 +42,4 @@ describe SamlIdp::Controller do
       end
     end
   end
-
 end
