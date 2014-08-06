@@ -30,6 +30,18 @@ describe SamlIdp::Controller do
       expect(response.is_valid?).to be true
     end
 
+    it "should handle custom attribute objects" do
+      provider = double(to_s: %[<saml:AttributeStatement><saml:Attribute Name="organization"><saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Organization name</saml:AttributeValue></saml:Attribute></saml:AttributeStatement>])
+
+      default_attributes = %[<saml:AttributeStatement><saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"><saml:AttributeValue>foo@example.com</saml:AttributeValue></saml:Attribute></saml:AttributeStatement>]
+
+
+      saml_response = encode_SAMLResponse("foo@example.com", { attributes_provider: provider })
+      response = OneLogin::RubySaml::Response.new(saml_response)
+      expect(response.response).to include provider.to_s
+      expect(response.response).to_not include default_attributes
+    end
+
     [:sha1, :sha256, :sha384, :sha512].each do |algorithm_name|
       it "should create a SAML Response using the #{algorithm_name} algorithm" do
         self.algorithm = algorithm_name
