@@ -12,7 +12,7 @@ describe SamlIdp::Controller do
     requested_saml_acs_url = "https://example.com/saml/consume"
     params[:SAMLRequest] = make_saml_request(requested_saml_acs_url)
     validate_saml_request
-    expect(saml_acs_url).to eq(requested_saml_acs_url)
+    saml_acs_url.should == requested_saml_acs_url
   end
 
   context "SAML Responses" do
@@ -23,35 +23,38 @@ describe SamlIdp::Controller do
 
     it "should create a SAML Response" do
       saml_response = encode_SAMLResponse("foo@example.com")
-      response = OneLogin::RubySaml::Response.new(saml_response)
-      expect(response.name_id).to eq("foo@example.com")
-      expect(response.issuer).to eq("http://example.com")
+      response = Onelogin::Saml::Response.new(saml_response)
+      response.name_id.should == "foo@example.com"
+      response.issuer.should == "http://example.com"
       response.settings = saml_settings
-      expect(response.is_valid?).to be true
+      response.is_valid?.should be_true
     end
 
-    it "should handle custom attribute objects" do
-      provider = double(to_s: %[<saml:AttributeStatement><saml:Attribute Name="organization"><saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Organization name</saml:AttributeValue></saml:Attribute></saml:AttributeStatement>])
-
-      default_attributes = %[<saml:AttributeStatement><saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"><saml:AttributeValue>foo@example.com</saml:AttributeValue></saml:Attribute></saml:AttributeStatement>]
-
-
-      saml_response = encode_SAMLResponse("foo@example.com", { attributes_provider: provider })
-      response = OneLogin::RubySaml::Response.new(saml_response)
-      expect(response.response).to include provider.to_s
-      expect(response.response).to_not include default_attributes
-    end
-
-    [:sha1, :sha256, :sha384, :sha512].each do |algorithm_name|
+    [:sha1, :sha256].each do |algorithm_name|
       it "should create a SAML Response using the #{algorithm_name} algorithm" do
         self.algorithm = algorithm_name
         saml_response = encode_SAMLResponse("foo@example.com")
-        response = OneLogin::RubySaml::Response.new(saml_response)
-        expect(response.name_id).to eq("foo@example.com")
-        expect(response.issuer).to eq("http://example.com")
+        response = Onelogin::Saml::Response.new(saml_response)
+        response.name_id.should == "foo@example.com"
+        response.issuer.should == "http://example.com"
         response.settings = saml_settings
-        expect(response.is_valid?).to be true
+        response.is_valid?.should be_true
+      end
+    end
+
+    [:sha384, :sha512].each do |algorithm_name|
+      it "should create a SAML Response using the #{algorithm_name} algorithm" do
+        pending "release of ruby-saml v0.5.4" do
+          self.algorithm = algorithm_name
+          saml_response = encode_SAMLResponse("foo@example.com")
+          response = Onelogin::Saml::Response.new(saml_response)
+          response.name_id.should == "foo@example.com"
+          response.issuer.should == "http://example.com"
+          response.settings = saml_settings
+          response.is_valid?.should be_true
+        end
       end
     end
   end
+
 end
