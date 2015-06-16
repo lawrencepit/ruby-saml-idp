@@ -1,37 +1,41 @@
 # encoding: utf-8
-class SamlIdp::IdpController < ActionController::Base
-  include SamlIdp::Controller
+module SamlIdp
+  class IdpController < ActionController::Base
+    include SamlIdp::Controller
 
-  protect_from_forgery
+    unloadable
 
-  before_filter :validate_saml_request
+    protect_from_forgery
 
-  def new
-    render :template => "saml_idp/idp/new"
-  end
+    before_filter :validate_saml_request
 
-  def create
-    unless params[:email].blank? && params[:password].blank?
-      person = idp_authenticate(params[:email], params[:password])
-      if person.nil?
-        @saml_idp_fail_msg = "Incorrect email or password."
-      else
-        @saml_response = idp_make_saml_response(person)
-        render :template => "saml_idp/idp/saml_post", :layout => false
-        return
-      end
+    def new
+      render :template => "saml_idp/idp/new"
     end
-    render :template => "saml_idp/idp/new"
+
+    def create
+      unless params[:email].blank? && params[:password].blank?
+        person = idp_authenticate(params[:email], params[:password])
+        if person.nil?
+          @saml_idp_fail_msg = "Incorrect email or password."
+        else
+          @saml_response = idp_make_saml_response(person)
+          render :template => "saml_idp/idp/saml_post", :layout => false
+          return
+        end
+      end
+      render :template => "saml_idp/idp/new"
+    end
+
+    protected
+
+      def idp_authenticate(email, password)
+        raise "Not implemented"
+      end
+
+      def idp_make_saml_response(person)
+        raise "Not implemented"
+      end
+
   end
-
-  protected
-
-  def idp_authenticate(email, password)
-    raise "Not implemented"
-  end
-
-  def idp_make_saml_response(person)
-    raise "Not implemented"
-  end
-
 end
