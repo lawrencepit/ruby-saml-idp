@@ -5,7 +5,6 @@ module SamlIdp
     require 'openssl'
     require 'base64'
     require 'time'
-    require 'uuid'
 
     attr_accessor :x509_certificate, :secret_key, :algorithm
     attr_accessor :saml_acs_url
@@ -61,7 +60,7 @@ module SamlIdp
 
       def encode_SAMLResponse(nameID, opts = {})
         now = Time.now.utc
-        response_id, reference_id = UUID.generate, UUID.generate
+        response_id, reference_id = SecureRandom.uuid, SecureRandom.uuid
         audience_uri = opts[:audience_uri] || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
         issuer_uri = opts[:issuer_uri] || (defined?(request) && request.url) || "http://example.com"
         attributes_statement = attributes(opts[:attributes_provider], nameID)
