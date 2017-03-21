@@ -7,12 +7,41 @@ describe SamlIdp::Controller do
   def params
     @params ||= {}
   end
+  SAML_ACS_URLS = %w(https://example.com/saml/consume https://example.com/saml/consume?toto=value&tata=value2)
 
-  it "should find the SAML ACS URL" do
-    requested_saml_acs_url = "https://example.com/saml/consume"
-    params[:SAMLRequest] = make_saml_request(requested_saml_acs_url)
+  SAML_ACS_URLS.each do |requested_saml_acs_url|
+    it "should find the SAML ACS URL: #{requested_saml_acs_url}" do
+      params[:SAMLRequest] = make_saml_request(requested_saml_acs_url)
+      validate_saml_request
+      expect(saml_acs_url).to eq(requested_saml_acs_url)
+    end
+  end
+
+  it 'should find the SAML ACS URL' do
+    xml = %q(
+      <samlp:ArtifactResponse xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
+         <samlp:AuthnRequest ID="_306f8ec5b618f361c70b6ffb1480eade" AssertionConsumerServiceURL="https://sp.example.com/SAML2/SSO/Artifact" />
+      </samlp:ArtifactResponse>
+    )
+    params[:SAMLRequest] =  prepare_saml_request(xml)
     validate_saml_request
-    expect(saml_acs_url).to eq(requested_saml_acs_url)
+    expect(saml_acs_url).to eq('https://sp.example.com/SAML2/SSO/Artifact')
+  end
+
+  it 'does not validate wrong requests' do
+    params[:SAMLRequest] = 'FAKE NEWS'
+    expect{validate_saml_request}.to raise_error
+  end
+
+  it 'does not validate wrong xmls' do
+    xml = %q(
+      <samlp:ArtifactResponse xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
+         <samlp:AuthnRequest ID="_306f8ec5b618f361c70b6ffb1480eade" AssertionConsumerServiceURL="https://sp.example.com/SAML2/SSO/Artifact?wrongparam=titi&wrongcaract=titi" />
+      </samlp:ArtifactResponse>
+    )
+
+    params[:SAMLRequest] = prepare_saml_request(xml)
+    expect{validate_saml_request}.to raise_error
   end
 
   context "SAML Responses" do
@@ -54,4 +83,20 @@ describe SamlIdp::Controller do
       end
     end
   end
+  context "SAML Responses with special characters" do
+    before(:each) do
+      params[:SAMLRequest] = make_saml_request('https://example.com/saml/consume?toto=value&tata=value2')
+      validate_saml_request
+    end
+    it "should create a SAML Response" do
+      saml_response = encode_SAMLResponse("foo@example.com")
+      response = OneLogin::RubySaml::Response.new(saml_response)
+      expect(response.name_id).to eq("foo@example.com")
+      expect(response.issuer).to eq("http://example.com")
+      response.settings = saml_settings
+      expect(response.is_valid?).to be true
+    end
+  end
+
+
 end
