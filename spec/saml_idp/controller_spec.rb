@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'spec_helper'
+require 'timecop'
 
 describe SamlIdp::Controller do
   include SamlIdp::Controller
@@ -52,6 +53,22 @@ describe SamlIdp::Controller do
         response.settings = saml_settings
         expect(response.is_valid?).to be true
       end
+    end
+
+    it "should not set SessionNotOnOrAfter when expires_in is nil" do
+      Timecop.freeze
+      self.expires_in = nil
+      saml_response = encode_SAMLResponse("foo@example.com")
+      response = OneLogin::RubySaml::Response.new(saml_response)
+      expect(response.session_expires_at).to be_nil
+    end
+
+    it "should set SessionNotOnOrAfter when expires_in is specified" do
+      self.expires_in = 86400 # 1 day
+      now = Time.now.utc
+      saml_response = Timecop.freeze(now) { encode_SAMLResponse("foo@example.com") }
+      response = OneLogin::RubySaml::Response.new(saml_response)
+      expect(response.session_expires_at).to eq(Time.at(now.to_i + 86400))
     end
   end
 end
