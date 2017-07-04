@@ -11,6 +11,8 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/lawrencepit/ruby-saml-idp}
   s.summary = %q{SAML Indentity Provider in ruby}
   s.description = %q{SAML IdP (Identity Provider) library in ruby}
+  s.license = "MIT"
+  
   s.date = Time.now.utc.strftime("%Y-%m-%d")
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + [
      "MIT-LICENSE",
