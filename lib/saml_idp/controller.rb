@@ -46,7 +46,7 @@ module SamlIdp
     protected
 
       def validate_saml_request(saml_request = params[:SAMLRequest])
-        decode_SAMLRequest(saml_request)
+        decode_SAMLRequest(saml_request) rescue false
       end
 
       def decode_SAMLRequest(saml_request)
