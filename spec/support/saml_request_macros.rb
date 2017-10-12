@@ -16,4 +16,17 @@ module SamlRequestMacros
     settings
   end
 
+  def prepare_saml_request(xml)
+    deflated = deflate(xml)
+    encode(deflated)
+  end
+
+  def encode(encoded)
+    Base64.encode64(encoded).gsub(/\n/, "")
+  end
+
+  def deflate(inflated)
+    Zlib::Deflate.deflate(inflated, 9)[2..-5]
+  end
+
 end
