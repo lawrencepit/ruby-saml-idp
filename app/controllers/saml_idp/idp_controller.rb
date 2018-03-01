@@ -1,4 +1,3 @@
-# encoding: utf-8
 module SamlIdp
   class IdpController < ActionController::Base
     include SamlIdp::Controller

@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module SamlIdp
   module Controller
     require 'openssl'
