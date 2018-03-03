@@ -17,7 +17,7 @@ module SamlIdp
     end
 
     def create
-      unless params[:email].blank? && params[:password].blank?
+      if !params[:email].blank? && !params[:password].blank?
         person = idp_authenticate(params[:email], params[:password])
         if person.nil?
           @saml_idp_fail_msg = "Incorrect email or password."
@@ -26,6 +26,8 @@ module SamlIdp
           render :template => "saml_idp/idp/saml_post", :layout => false
           return
         end
+      else
+        @saml_idp_fail_msg = "Please enter your email and password."
       end
       render :template => "saml_idp/idp/new"
     end
