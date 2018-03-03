@@ -1,4 +1,3 @@
-# encoding: utf-8
 module SamlIdp
   require 'saml_idp/configurator'
   require 'saml_idp/controller'

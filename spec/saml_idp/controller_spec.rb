@@ -1,4 +1,3 @@
-# encoding: utf-8
 require 'spec_helper'
 require 'timecop'
 
@@ -26,16 +25,15 @@ describe SamlIdp::Controller do
       saml_response = encode_SAMLResponse("foo@example.com")
       response = OneLogin::RubySaml::Response.new(saml_response)
       expect(response.name_id).to eq("foo@example.com")
-      expect(response.issuer).to eq("http://example.com")
+      expect(response.issuers).to eq(["http://example.com"])
       response.settings = saml_settings
-      expect(response.is_valid?).to be true
+      expect(response.is_valid?).to be_truthy
     end
 
     it "should handle custom attribute objects" do
       provider = double(to_s: %[<saml:AttributeStatement><saml:Attribute Name="organization"><saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Organization name</saml:AttributeValue></saml:Attribute></saml:AttributeStatement>])
 
       default_attributes = %[<saml:AttributeStatement><saml:Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"><saml:AttributeValue>foo@example.com</saml:AttributeValue></saml:Attribute></saml:AttributeStatement>]
-
 
       saml_response = encode_SAMLResponse("foo@example.com", { attributes_provider: provider })
       response = OneLogin::RubySaml::Response.new(saml_response)
@@ -49,7 +47,7 @@ describe SamlIdp::Controller do
         saml_response = encode_SAMLResponse("foo@example.com")
         response = OneLogin::RubySaml::Response.new(saml_response)
         expect(response.name_id).to eq("foo@example.com")
-        expect(response.issuer).to eq("http://example.com")
+        expect(response.issuers).to eq(["http://example.com"])
         response.settings = saml_settings
         expect(response.is_valid?).to be true
       end

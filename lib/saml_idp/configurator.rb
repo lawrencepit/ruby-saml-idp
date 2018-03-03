@@ -1,4 +1,3 @@
-# encoding: utf-8
 module SamlIdp
   class Configurator
     attr_accessor :x509_certificate, :secret_key, :algorithm, :expires_in

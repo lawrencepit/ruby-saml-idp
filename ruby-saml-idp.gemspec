@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
 require "saml_idp/version"
 
@@ -11,6 +10,8 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/lawrencepit/ruby-saml-idp}
   s.summary = %q{SAML Indentity Provider in ruby}
   s.description = %q{SAML IdP (Identity Provider) library in ruby}
+  s.license = "MIT"
+
   s.date = Time.now.utc.strftime("%Y-%m-%d")
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + [
      "MIT-LICENSE",
@@ -22,10 +23,10 @@ Gem::Specification.new do |s|
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   s.rdoc_options = ["--charset=UTF-8"]
-  s.add_development_dependency "rake"
-  s.add_development_dependency("nokogiri", "~> 1.6.8")
+  s.add_development_dependency("rake")
+  s.add_development_dependency("ruby-saml")
+  s.add_development_dependency("nokogiri")
   s.add_development_dependency("rspec", "~> 3.0")
-  s.add_development_dependency("ruby-saml", "~> 0.8")
   s.add_development_dependency("rails", "~> 3.2")
   s.add_development_dependency("capybara", "~> 2.4.1")
   s.add_development_dependency("timecop", "~> 0.9.0")
