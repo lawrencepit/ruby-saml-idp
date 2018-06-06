@@ -3,6 +3,7 @@ module SamlIdp
     require 'openssl'
     require 'base64'
     require 'time'
+    require 'securerandom'
 
     attr_accessor :x509_certificate, :secret_key, :algorithm, :expires_in
     attr_accessor :saml_acs_url
