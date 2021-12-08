@@ -19,8 +19,6 @@ Gem::Specification.new do |s|
      "Gemfile",
      "ruby-saml-idp.gemspec"
   ]
-  s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
   s.rdoc_options = ["--charset=UTF-8"]
   s.add_development_dependency("rake")
