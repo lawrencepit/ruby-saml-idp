@@ -27,8 +27,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency("ruby-saml")
   s.add_development_dependency("nokogiri")
   s.add_development_dependency("rspec", "~> 3.0")
-  s.add_development_dependency("rails", "~> 6.1")
+  s.add_development_dependency("rails", ">= 6.0")
   s.add_development_dependency("capybara")
   s.add_development_dependency("timecop")
+  s.add_development_dependency 'appraisal', '~> 2'
 end
-
