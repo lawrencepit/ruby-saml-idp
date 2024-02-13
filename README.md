@@ -93,6 +93,17 @@ Service Providers
 To act as a Service Provider which generates SAML Requests and can react to SAML Responses use the excellent [ruby-saml](https://github.com/onelogin/ruby-saml) gem.
 
 
+Development
+-----------
+
+```
+bundle install
+bundle exec appraisal install
+bundle exec appraisal rake
+bundle exec appraisal rails61 rake
+```
+
+
 Copyright
 -----------
 
