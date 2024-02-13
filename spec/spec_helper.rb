@@ -19,5 +19,4 @@ RSpec.configure do |config|
   config.include SamlRequestMacros
 end
 
-Capybara.default_host = "https://app.example.com"
-
+Capybara.default_host = "https://localhost"
