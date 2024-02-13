@@ -9,3 +9,7 @@ end
 appraise 'rails70' do
   gem 'activerecord', '7.0.8'
 end
+
+appraise 'rails71' do
+  gem 'activerecord', '7.1.3'
+end

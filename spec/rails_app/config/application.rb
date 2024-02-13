@@ -55,5 +55,7 @@ module RailsApp
 
     # Version of your assets, change this if you want to expire all your assets
     # config.assets.version = '1.0'
+
+    config.load_defaults "#{Rails::VERSION::MAJOR}.#{Rails::VERSION::MINOR}"
   end
 end
